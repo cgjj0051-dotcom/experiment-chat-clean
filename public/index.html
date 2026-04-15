@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>対照実験システム</title>
+    <style>
+        :root { --blue: #2563eb; --bg: #f3f4f6; }
+        body { font-family: sans-serif; background: var(--bg); margin: 0; display: flex; justify-content: center; padding: 20px; }
+        .card { background: white; width: 100%; max-width: 750px; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .setup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        .param-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; background: #f9fafb; padding: 15px; border-radius: 8px; }
+        label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #374151; }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; box-sizing: border-box; font-size: 15px; }
+        .btn { cursor: pointer; border: none; padding: 14px; border-radius: 6px; font-weight: bold; font-size: 16px; transition: 0.2s; }
+        .btn-primary { background: var(--blue); color: white; width: 100%; }
+        .btn-primary:hover { opacity: 0.9; }
+        /* Chat UI */
+        #chat-view { display: none; }
+        #chat-box { height: 450px; overflow-y: auto; border: 1px solid #e5e7eb; padding: 20px; background: #ffffff; display: flex; flex-direction: column; gap: 12px; border-radius: 8px; margin: 15px 0; }
+        .msg { padding: 10px 14px; border-radius: 15px; max-width: 80%; font-size: 15px; line-height: 1.5; }
+        .human { align-self: flex-end; background: var(--blue); color: white; border-bottom-right-radius: 2px; }
+        .bot { align-self: flex-start; background: #f3f4f6; color: #1f2937; border-bottom-left-radius: 2px; border: 1px solid #e5e7eb; }
+        .u-name { font-size: 11px; margin-bottom: 4px; display: block; font-weight: bold; opacity: 0.8; }
+        #protocol-bar { font-size: 13px; background: #fff9c4; padding: 10px; border-radius: 6px; border-left: 4px solid #fbc02d; }
+    </style>
+</head>
+<body>
+
+<div class="card" id="setup-view">
+    <h2 style="text-align:center; margin-top:0;">実験セットアップ</h2>
+    <div class="setup-grid">
+        <div><label>参加者 1 名前</label><input type="text" id="p1" value="参加者A"></div>
+        <div><label>参加者 2 名前</label><input type="text" id="p2" value="参加者B"></div>
+    </div>
+    <div style="margin-bottom:20px;">
+        <label>ボットの口調（独立変数）</label>
+        <select id="botConfig">
+            <option value="polite">標準語（です・ます）</option>
+            <option value="casual">標準語（ため口）</option>
+            <option value="kansai">関西弁（マイルド）</option>
+            <option value="none">ボットなし（統制群）</option>
+        </select>
+    </div>
+    <div class="param-grid">
+        <div><label>停滞判定 X (秒)</label><input type="number" id="X" value="20"></div>
+        <div><label>最大介入 N (回)</label><input type="number" id="N" value="3"></div>
+        <div><label>クールダウン C (秒)</label><input type="number" id="C" value="30"></div>
+    </div>
+    <div style="margin:20px 0;">
+        <label>参加者への指示（プロトコル）</label>
+        <textarea id="proto" rows="3" placeholder="議論のテーマなどを入力"></textarea>
+    </div>
+    <button class="btn btn-primary" onclick="createExperiment()">実験を開始し、URLを発行する</button>
+    
+    <div id="url-box" style="display:none; margin-top:20px; padding:15px; background: #ecfdf5; border: 1px solid #10b981; border-radius: 8px;">
+        <label style="color:#065f46;">配布用リンク（クリックでコピー）</label>
+        <div id="links" style="font-family:monospace; font-size:12px; margin-top:10px; cursor:pointer;" onclick="copyLinks()"></div>
+    </div>
+</div>
+
+<div class="card" id="chat-view">
+    <h3 id="whoami" style="margin-top:0;"></h3>
+    <div id="protocol-bar"></div>
+    <div id="chat-box"></div>
+    <div style="display:flex; gap:10px;">
+        <input type="text" id="mInput" placeholder="メッセージを入力...">
+        <button class="btn btn-primary" style="width:100px; padding:10px;" onclick="send()">送信</button>
+    </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io();
+    const params = new URLSearchParams(window.location.search);
+    
+    // 参加者としてアクセスした場合
+    if(params.get('room')) {
+        document.getElementById('setup-view').style.display = 'none';
+        document.getElementById('chat-view').style.display = 'block';
+        socket.emit('join_room', { roomId: params.get('room'), playerNum: params.get('p') });
+    }
+
+    function createExperiment() {
+        socket.emit('create_experiment', {
+            p1Name: document.getElementById('p1').value,
+            p2Name: document.getElementById('p2').value,
+            botConfig: document.getElementById('botConfig').value,
+            stagnationX: document.getElementById('X').value,
+            limitN: document.getElementById('N').value,
+            cooldownC: document.getElementById('C').value,
+            protocol: document.getElementById('proto').value
+        });
+    }
+
+    socket.on('experiment_created', (data) => {
+        const base = window.location.origin;
+        const l1 = `${base}?room=${data.roomId}&p=1`;
+        const l2 = `${base}?room=${data.roomId}&p=2`;
+        document.getElementById('links').innerText = `参加者1: ${l1}\n参加者2: ${l2}`;
+        document.getElementById('url-box').style.display = 'block';
+    });
+
+    function copyLinks() {
+        navigator.clipboard.writeText(document.getElementById('links').innerText);
+        alert("URLをコピーしました");
+    }
+
+    socket.on('room_info', (data) => {
+        document.getElementById('whoami').innerText = `${data.userName} さんの画面`;
+        document.getElementById('protocol-bar').innerText = `【指示】${data.protocol}`;
+    });
+
+    function send() {
+        const el = document.getElementById('mInput');
+        if(el.value.trim()) {
+            socket.emit('chat_message', { message: el.value });
+            el.value = '';
+        }
+    }
+
+    socket.on('chat_message', (data) => {
+        const box = document.getElementById('chat-box');
+        const div = document.createElement('div');
+        div.className = `msg ${data.role === 'human' ? 'human' : 'bot'}`;
+        div.innerHTML = `<span class="u-name">${data.userName}</span>${data.message}`;
+        box.appendChild(div);
+        box.scrollTop = box.scrollHeight;
+    });
+
+    document.getElementById('mInput').onkeypress = (e) => { if(e.key === 'Enter') send(); };
+</script>
+</body>
+</html>

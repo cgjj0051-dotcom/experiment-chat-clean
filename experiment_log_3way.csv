@@ -1,0 +1,9 @@
+timestamp,roomId,userId,userName,role,message
+2026/2/21 10:10:43,room_rDV_xTCe6s_T4Nb2AAAB,rDV_xTCe6s_T4Nb2AAAB,kai,Participant 1,"みえる？"
+2026/2/21 10:10:45,room_rDV_xTCe6s_T4Nb2AAAB,BOT_ID,Chatbot,Chatbot,"[Botの反応] kaiさん、それについてどう思いますか？"
+2026/2/21 10:10:57,room_rDV_xTCe6s_T4Nb2AAAB,uRAXjVGJsJl9InHfAAAD,natsuki,Participant 2,"できた"
+2026/2/21 10:10:59,room_rDV_xTCe6s_T4Nb2AAAB,BOT_ID,Chatbot,Chatbot,"[Botの反応] natsukiさん、それについてどう思いますか？"
+2026/2/21 10:29:25,room_al6iQQwurAX4NGDmAAAB,al6iQQwurAX4NGDmAAAB,A,Participant 1,"やあ"
+2026/2/21 10:29:27,room_al6iQQwurAX4NGDmAAAB,BOT_ID,Chatbot,Chatbot,"[Botの反応] Aさん、それについてどう思いますか？"
+2026/2/21 10:29:37,room_al6iQQwurAX4NGDmAAAB,QwEhz8Y5NTE6tPzaAAAD,B,Participant 2,"なんとも"
+2026/2/21 10:29:39,room_al6iQQwurAX4NGDmAAAB,BOT_ID,Chatbot,Chatbot,"[Botの反応] Bさん、それについてどう思いますか？"

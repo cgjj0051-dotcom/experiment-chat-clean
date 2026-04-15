@@ -1,0 +1,15 @@
+experimentId,condition,timestamp,senderType,senderId,senderName,messageText,messageSeq,timeSinceLastHumanMsgMs,timeSinceLastMsgMs,stallEventId,interventionReason,interventionCategory,protocol,p1Name,p2Name
+24ba141a,polite,2026-02-21T03:08:30.891Z,system,system,SYSTEM,START_EXP: X=20 N=3 C=30,0,0,0,,INIT,NONE,好きな食べ物について,X,Y
+24ba141a,polite,2026-02-21T03:09:50.930Z,human,p1,X,こんにちはー,1,80039,80039,,NONE,NONE
+24ba141a,polite,2026-02-21T03:10:10.568Z,human,p2,Y,やっほー,2,19638,19638,,NONE,NONE
+24ba141a,polite,2026-02-21T03:10:28.736Z,human,p2,Y,何か送ってよ,3,18168,18168,,NONE,NONE
+24ba141a,polite,2026-02-21T03:10:35.341Z,human,p1,X,みえてない？,4,6605,6605,,NONE,NONE
+24ba141a,polite,2026-02-21T03:10:47.348Z,human,p2,Y,みえたみえた,5,12007,12007,,NONE,NONE
+24ba141a,polite,2026-02-21T03:11:07.362Z,bot,bot,AI ぶんちゃん,なるほど、わかりました。それについてお二人はどう考えますか。,6,20014,20014,cc4d56,STALL_TRIGGER,ELICIT_OPINION
+24ba141a,polite,2026-02-21T03:11:27.374Z,system,bot,AI ぶんちゃん,[LOG] Stagnation detected but no msg: COOLDOWN,7,40026,20012,f39a17,COOLDOWN,NONE
+24ba141a,polite,2026-02-21T03:11:38.372Z,human,p1,X,？？？,8,51024,31010,,NONE,NONE
+24ba141a,polite,2026-02-21T03:11:58.376Z,bot,bot,AI ぶんちゃん,今の話は興味深いです。もう少し詳しく教えてもらえますか。,9,20004,20004,a1503e,STALL_TRIGGER,PROMPT_ELABORATION
+24ba141a,polite,2026-02-21T03:12:18.390Z,system,bot,AI ぶんちゃん,[LOG] Stagnation detected but no msg: COOLDOWN,10,40018,20014,7ba414,COOLDOWN,NONE
+24ba141a,polite,2026-02-21T03:12:45.359Z,human,p1,X,話にならないです,11,66987,46983,,NONE,NONE
+24ba141a,polite,2026-02-21T03:13:05.375Z,bot,bot,AI ぶんちゃん,ただいまの点について、別の視点からはどのように見えますか。,12,20016,20016,956e99,STALL_TRIGGER,PERSPECTIVE_SHIFT
+24ba141a,polite,2026-02-21T03:13:25.392Z,system,bot,AI ぶんちゃん,[LOG] Stagnation detected but no msg: MAX_REACHED,13,40033,20017,439c8e,MAX_REACHED,NONE
