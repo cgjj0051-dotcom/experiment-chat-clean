@@ -138,6 +138,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on('join_room', ({ roomId, playerNum }) => {
+socket.on('join_room', ({ roomId, playerNum }) => {
         const exp = experiments[roomId];
         if (!exp) return;
 
@@ -155,6 +156,11 @@ io.on('connection', (socket) => {
     });
 
     socket.on('chat_message', (data) => {
+socket.on('chat_message', (data) => {
+
+    console.log("chat_message受信:", data.message); // ←ここ追加
+
+    const exp = experiments[socket.roomId];
         const exp = experiments[socket.roomId];
         if (!exp) return;
 
