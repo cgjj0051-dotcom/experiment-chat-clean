@@ -138,10 +138,14 @@ io.on('connection', (socket) => {
     });
 
     socket.on('join_room', ({ roomId, playerNum }) => {
+        console.log("join_room:", roomId, playerNum);
         const exp = experiments[roomId];
         if (!exp) return;
 
         socket.join(roomId);
+
+        console.log("join成功:", roomId);
+
         socket.roomId = roomId;
         socket.playerNum = playerNum;
         socket.userName = playerNum === "1" ? exp.p1Name : exp.p2Name;
@@ -155,8 +159,14 @@ io.on('connection', (socket) => {
     });
 
     socket.on('chat_message', (data) => {
+
+   
+        console.log("chat_message受信:", data.message);
+
         const exp = experiments[socket.roomId];
         if (!exp) return;
+     
+        console.log("emit先:", exp.roomId);
 
         const now = Date.now();
         exp.messageSeq++;
