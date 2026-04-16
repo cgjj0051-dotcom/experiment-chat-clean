@@ -122,21 +122,28 @@ io.on('connection', (socket) => {
 
   // 参加
   socket.on('join_room', ({ roomId, playerNum }) => {
+    console.log("JOIN受信:", roomId, playerNum);
+
     const exp = experiments[roomId];
-    if (!exp) return;
+    if (!exp) {
+        console.log("room存在しない");
+        return;
+    }
 
     socket.join(roomId);
     socket.roomId = roomId;
     socket.playerNum = playerNum;
     socket.userName = playerNum === "1" ? exp.p1Name : exp.p2Name;
 
+    console.log("JOIN成功:", roomId);
+
     socket.emit('room_info', {
-      userName: socket.userName,
-      protocol: exp.protocol
+        userName: socket.userName,
+        protocol: exp.protocol
     });
 
     resetTimer(roomId);
-  });
+});
 
   // メッセージ受信
   socket.on('chat_message', (data) => {
