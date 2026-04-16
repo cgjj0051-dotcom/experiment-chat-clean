@@ -71,6 +71,9 @@
 <script src="/socket.io/socket.io.js"></script>
 <script>
     const socket = io();
+socket.on('connect', () => {
+        console.log("接続成功", socket.id);
+    });
     const params = new URLSearchParams(window.location.search);
     
     // 参加者としてアクセスした場合
